@@ -6,7 +6,7 @@
 #    By: paoroste <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/16 16:53:04 by paoroste          #+#    #+#              #
-#    Updated: 2017/10/19 18:19:48 by paoroste         ###   ########.fr        #
+#    Updated: 2017/10/24 14:31:00 by paoroste         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,14 +15,15 @@ LIB_PATH = libft/
 LIB = $(LIB_PATH)/libft.a
 FLAGS = -Wall -Wextra -Werror
 
-SRC = main.c tools.c ft_mssg.c
+SRC = main.c tools.c exec_command.c cd.c echo.c setenv.c\
+	  signal.c unsetenv.c
 
 all: $(NAME)
 
 $(NAME):
 	@echo "\033[33m" "Compiling" [ $(NAME) ]. "\033[31m"
 	@make -C $(LIB_PATH)
-	@gcc $(SRC) $(LIB) -o $(NAME)
+	@gcc $(FLAGS) $(SRC) $(LIB) -o $(NAME)
 	@echo "\033[32m" "minishell has been Created" "\033[0m"
 
 clean:

@@ -6,7 +6,7 @@
 /*   By: paoroste <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 22:23:33 by paoroste          #+#    #+#             */
-/*   Updated: 2017/10/19 22:59:40 by paoroste         ###   ########.fr       */
+/*   Updated: 2017/10/24 19:02:47 by paoroste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,17 @@ static int		run_cmd(char *path, char **args)
 
 static int		check_built(char **command)
 {
-	if (ft_strequ(command[0], "exit"))
+	if (ft_strcmp(command[0], "exit") == 0)
 		return (-1);
-	else if (ft_strequ(command[0], "echo"))
-		return (echo(command + 1));
-	else if (ft_strequ(command[0], "cd"))
-		return (cd(command + 1));
-	else if (ft_strequ(command[0], "setenv"))
-		return (setenv(command + 1));
-	else if (ft_strequ(command[0], "unsetenv"))
-		return (unsetenv(command + 1));
-	else if (ft_strequ(command[0], "env"))
+	else if (ft_strcmp(command[0], "echo") == 0)
+		return (ft_echo(command + 1));
+	else if (ft_strcmp(command[0], "cd") == 0)
+		return (ft_cd(command + 1));
+	else if (ft_strcmp(command[0], "setenv") == 0)
+		return (ft_setenv(command + 1));
+	else if (ft_strcmp(command[0], "unsetenv") == 0)
+		return (ft_unsetenv(command + 1));
+	else if (ft_strcmp(command[0], "env") == 0)
 	{
 		print_env();
 		return (1);
@@ -118,4 +118,5 @@ int				exec_command(char **command)
 	}
 	ft_putstr("minishell: command not found: ");
 	ft_putendl(command[0]);
+	return (0);
 }

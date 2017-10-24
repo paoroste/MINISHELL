@@ -6,13 +6,13 @@
 /*   By: paoroste <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/09 15:06:32 by paoroste          #+#    #+#             */
-/*   Updated: 2017/10/19 22:58:34 by paoroste         ###   ########.fr       */
+/*   Updated: 2017/10/24 13:36:08 by paoroste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char		*parse_env_var(char *str, int pos)
+static char		*parse_env_var(char *str, int pos)
 {
 	char	*value;
 	char	*key;
@@ -34,7 +34,7 @@ char		*parse_env_var(char *str, int pos)
 	return (value);
 }
 
-char		*parse_input(char *input)
+static char		*parse_input(char *input)
 {
 	int		i;
 	char	*new;
@@ -49,7 +49,7 @@ char		*parse_input(char *input)
 			while (input[i + 1] && !IS_SPACE(input[i + 1]) && input[i + 1] != '$')
 				i++;
 		}
-		else if (((i != 0 && !IS_SPACE(input[i - 1])) || i == 0) && input[i] == '~')
+		else if (((i != 0 && IS_SPACE(input[i - 1])) || i == 0) && input[i] == '~')
 		{
 			new = ft_freejoin(new, parse_home_path(input + i, 1), 3);
 			i += ft_strlen(input + i) - 1;
@@ -61,7 +61,7 @@ char		*parse_input(char *input)
 	return (new);
 }
 
-void		get_input(char **input)
+static void		get_input(char **input)
 {
 	int		ret;
 	char	buf;
@@ -84,7 +84,7 @@ void		get_input(char **input)
 		out_shell();
 	}
 	if ((ft_strchr(*input, '$') != NULL) || (ft_strchr(*input, '~') != NULL))
-		parse_input(*input);
+		*input = parse_input(*input);
 }
 
 int			exec_commands(char **commands)
@@ -97,7 +97,7 @@ int			exec_commands(char **commands)
 	ret = 0;
 	while (commands[++i])
 	{
-		command = ft_strsplitall(command[i]);
+		command = ft_strsplitall(commands[i]);
 		ret = exec_command(command);
 		ft_freestrarr(command);
 		if (ret == -1)
@@ -152,8 +152,20 @@ int			main(int ac, char **av, char **envv)
 	while (1)
 	{
 		affichage();
-		//signal(SIGINT, signal_handler);
+		signal(SIGINT, signal_handler);
 		get_input(&input);
+		if (ft_strempty(input, 1))
+		{
+			free(input);
+			continue ;
+		}
+		commands = ft_strsplit(input, ';');
+		free(input);
+		ret = exec_commands(commands);
+		ft_freestrarr(commands);
+		if (ret == -1)
+			break ;
 	}
+	ft_freestrarr(g_envv);
 	return (0);
 }
